@@ -1,10 +1,11 @@
 
 
 import React, { useRef, useEffect, useState } from 'react';
-import { MapContainer, TileLayer, useMap, Circle, ZoomControl } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap, Circle, ZoomControl, Popup } from 'react-leaflet';
 import SearchControl from './SearchControl'; 
 import 'leaflet/dist/leaflet.css';
 import 'leaflet-geosearch/dist/geosearch.css';
+import L from 'leaflet';
 
 const geojsonUrl = `https://services.arcgis.com/fLeGjb7u4uXqeF9q/arcgis/rest/services/LATEST_CORE_SITE_RE
 ADINGS/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson`;
@@ -23,6 +24,29 @@ const HomeButton = () => {
       Home
     </button>
   );
+};
+
+const Legend = () => {
+  const map = useMap();
+
+  useEffect(() => {
+    const legend = L.control({ position: 'bottomright' });
+
+    legend.onAdd = function () {
+      const div = L.DomUtil.create('div', 'info legend');
+      div.innerHTML +=
+        '<i style="background: red"></i> Site Details<br>' +
+        '<i style="background: red; opacity: 0.5"></i> Circle represents the area<br>';
+      return div;
+    };
+
+    legend.addTo(map);
+    return () => {
+      legend.remove();
+    };
+  }, [map]);
+
+  return null;
 };
 
 const MapView = () => {
@@ -52,7 +76,15 @@ const MapView = () => {
           color="red"
           fillColor="red"
           fillOpacity={0.5}
-        />
+          >
+          <Popup>
+            <div>
+              <strong>Site Name:</strong> {feature.properties.SITE_NAME}<br />
+              <strong>Site Address:</strong> {feature.properties.SITE_ADDRESS}<br />
+              
+            </div>
+          </Popup>
+          </Circle>
       );
     });
   };
