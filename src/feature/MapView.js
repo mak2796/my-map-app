@@ -105,6 +105,7 @@ const MapView = () => {
         <SearchControl />
         <HomeButton />
         <ZoomControl position="topright" />
+        <Legend/>
         {renderCircles()}
       </MapContainer>
     </div>
